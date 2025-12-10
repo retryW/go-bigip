@@ -2167,65 +2167,89 @@ type ResponseAdaptProfile struct {
 	Timeout           int    `json:"timeout,omitempty"`
 }
 
+// TrafficMatchingCriteria contains a list of TrafficMatchingCriteria objects.
+type TrafficMatchingCriterias struct {
+	TrafficMatchingCriterias []TrafficMatchingCriteria `json:"items"`
+}
+
+// TrafficMatchingCriteria contains information about each Traffic-Matching-Criteria.
+type TrafficMatchingCriteria struct {
+	Name                     string   `json:"name,omitempty"`
+	Partition                string   `json:"partition,omitempty"`
+	FullPath                 string   `json:"fullPath,omitempty"`
+	Generation               int      `json:"generation,omitempty"`
+	Description              string   `json:"description,omitempty"`
+	Protocol                 string   `json:"protocol,omitempty"`
+	RouteDomain              string   `json:"routeDomain,omitempty"`
+	DestinationAddressList   string   `json:"destinationAddressList,omitempty"`
+	DestinationAddressInline string   `json:"destinationAddressInline,omitempty"`
+	DestinationPortList      string   `json:"destinationPortList,omitempty"`
+	DestinationPortInline    string   `json:"destinationPortInline,omitempty"`
+	SourceAddressList        string   `json:"sourceAddressList,omitempty"`
+	SourceAddressInline      string   `json:"sourceAddressInline,omitempty"`
+	SourcePortInline         int      `json:"sourcePortInline,omitempty"`
+}
+
 const (
-	uriLtm             = "ltm"
-	uriNode            = "node"
-	uriPool            = "pool"
-	uriPoolMember      = "members"
-	uriProfile         = "profile"
-	uriCipher          = "cipher"
-	uriServerSSL       = "server-ssl"
-	uriClientSSL       = "client-ssl"
-	uriVirtual         = "virtual"
-	uriVirtualAddress  = "virtual-address"
-	uriSnatPool        = "snatpool"
-	uriMonitor         = "monitor"
-	uriIRule           = "rule"
-	uriDatagroup       = "data-group"
-	uriInternal        = "internal"
-	uriExternal        = "external"
-	uriPolicy          = "policy"
-	uriOneconnect      = "one-connect"
-	uriPersistence     = "persistence"
-	ENABLED            = "enable"
-	DISABLED           = "disable"
-	CONTEXT_SERVER     = "serverside"
-	CONTEXT_CLIENT     = "clientside"
-	CONTEXT_ALL        = "all"
-	uriRewrite         = "rewrite"
-	uriRewriteRules    = "uri-rules"
-	uriTcp             = "tcp"
-	uriUDP             = "udp"
-	uriFtp             = "ftp"
-	uriFasthttp        = "fasthttp"
-	uriFastl4          = "fastl4"
-	uriHttpcompress    = "http-compression"
-	uriHttp2           = "http2"
-	uriSnat            = "snat"
-	uriSnatpool        = "snatpool"
-	uriCookie          = "cookie"
-	uriDestAddr        = "dest-addr"
-	uriHash            = "hash"
-	uriHost            = "host"
-	uriMSRDP           = "msrdp"
-	uriSIP             = "sip"
-	uriSourceAddr      = "source-addr"
-	uriSSL             = "ssl"
-	uriUniversal       = "universal"
-	uriCreateDraft     = "?options=create-draft"
-	uriRule            = "rule"
-	uriWebAcceleration = "web-acceleration"
-	uriHttp            = "http"
-	uriRequestLog      = "request-log"
-	uriSecurity        = "security"
-	uriBotDefense      = "bot-defense"
-	uriSaas            = "saas"
-	uriSaasBotDefense  = "bd"
-	uriRequestAdapt    = "request-adapt"
-	uriResponseAdapt   = "response-adapt"
-	uriWebsocket       = "websocket"
-	uriHTML            = "html"
-	uriAnalytics       = "analytics"
+	uriLtm                     = "ltm"
+	uriNode                    = "node"
+	uriPool                    = "pool"
+	uriPoolMember              = "members"
+	uriProfile                 = "profile"
+	uriCipher                  = "cipher"
+	uriServerSSL               = "server-ssl"
+	uriClientSSL               = "client-ssl"
+	uriVirtual                 = "virtual"
+	uriVirtualAddress          = "virtual-address"
+	uriSnatPool                = "snatpool"
+	uriMonitor                 = "monitor"
+	uriIRule                   = "rule"
+	uriDatagroup               = "data-group"
+	uriInternal                = "internal"
+	uriExternal                = "external"
+	uriPolicy                  = "policy"
+	uriOneconnect              = "one-connect"
+	uriPersistence             = "persistence"
+	uriTrafficMatchingCriteria = "traffic-matching-criteria"
+	ENABLED                    = "enable"
+	DISABLED                   = "disable"
+	CONTEXT_SERVER             = "serverside"
+	CONTEXT_CLIENT             = "clientside"
+	CONTEXT_ALL                = "all"
+	uriRewrite                 = "rewrite"
+	uriRewriteRules            = "uri-rules"
+	uriTcp                     = "tcp"
+	uriUDP                     = "udp"
+	uriFtp                     = "ftp"
+	uriFasthttp                = "fasthttp"
+	uriFastl4                  = "fastl4"
+	uriHttpcompress            = "http-compression"
+	uriHttp2                   = "http2"
+	uriSnat                    = "snat"
+	uriSnatpool                = "snatpool"
+	uriCookie                  = "cookie"
+	uriDestAddr                = "dest-addr"
+	uriHash                    = "hash"
+	uriHost                    = "host"
+	uriMSRDP                   = "msrdp"
+	uriSIP                     = "sip"
+	uriSourceAddr              = "source-addr"
+	uriSSL                     = "ssl"
+	uriUniversal               = "universal"
+	uriCreateDraft             = "?options=create-draft"
+	uriRule                    = "rule"
+	uriWebAcceleration         = "web-acceleration"
+	uriHttp                    = "http"
+	uriRequestLog              = "request-log"
+	uriSecurity                = "security"
+	uriBotDefense              = "bot-defense"
+	uriSaas                    = "saas"
+	uriSaasBotDefense          = "bd"
+	uriRequestAdapt            = "request-adapt"
+	uriResponseAdapt           = "response-adapt"
+	uriWebsocket               = "websocket"
+	uriHTML                    = "html"
+	uriAnalytics               = "analytics"
 )
 
 var cidr = map[string]string{
@@ -4941,4 +4965,51 @@ func (b *BigIP) DeleteAnalyticsProfile(name string) error {
 // Fields that can be modified are referenced in the AnalyticsProfile struct.
 func (b *BigIP) ModifyAnalyticsProfile(name string, config *AnalyticsProfile) error {
 	return b.patch(config, uriLtm, uriProfile, uriAnalytics, name)
+}
+
+// GetTrafficMatchingCriteria returns all TrafficMatchingCriteria objects on the Big-IP system.
+func (b *BigIP) TrafficMatchingCriterias() (*TrafficMatchingCriterias, error) {
+	var trafficMatchingCriterias TrafficMatchingCriterias
+	err, ok := b.getForEntity(&trafficMatchingCriterias, uriLtm, uriTrafficMatchingCriteria)
+	if err != nil {
+		return nil, err
+	}
+
+	if !ok {
+		return nil, nil
+	}
+
+	return &trafficMatchingCriterias, nil
+}
+
+// GetTrafficMatchingCriteria returns a single named TrafficMatchingCriteria.
+// Returns nil if the Traffic Matching Criteria does not exist.
+func (b *BigIP) GetTrafficMatchingCriteria(name string) (*TrafficMatchingCriteria, error) {
+	var trafficMatchingCriteria TrafficMatchingCriteria
+	err, ok := b.getForEntity(&trafficMatchingCriteria, uriLtm, uriTrafficMatchingCriteria, name)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if !ok {
+		return nil, nil
+	}
+
+	return &trafficMatchingCriteria, nil
+}
+
+// AddTrafficMatchingCritera creates a Traffic Matching Criteria object on the Big-IP system.
+func (b *BigIP) AddTrafficMatchingCriteria(config *TrafficMatchingCriteria) error {
+	return b.post(config, uriLtm, uriTrafficMatchingCriteria)
+}
+
+// ModifyTrafficMatchingCriteria modifies a Traffic Matching Criteria object on the Big-IP system.
+func (b *BigIP) ModifyTrafficMatchingCriteria(name string, config *TrafficMatchingCriteria) error {
+	return b.patch(config, uriLtm, uriTrafficMatchingCriteria, name)
+}
+
+// DeleteTrafficMatchingCriteria removes a Traffic Matching Criteria object from the Big-IP system.
+func (b *BigIP) DeleteTrafficMatchingCriteria (name string) error {
+	return b.delete(uriLtm, uriTrafficMatchingCriteria, name)
 }
