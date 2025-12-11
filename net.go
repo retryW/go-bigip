@@ -309,6 +309,20 @@ type IPSecProfile struct {
 	TrafficSelector string `json:"trafficSelector,omitempty"`
 }
 
+type AddressLists struct {
+	Items []AddressList `json:"items,omitempty"`
+}
+
+type AddressList struct {
+	Name       string `json:"name,omitempty"`
+	Partition  string `json:"partition,omitempty"`
+	FullPath   string `json:"fullPath,omitempty"`
+	Generation int    `json:"generation,omitempty"`
+	Addresses  []struct{
+		Name string `json:"name,omitempty"`
+	} `json:"addresses,omitempty"`
+}
+
 const (
 	uriNet             = "net"
 	uriInterface       = "interface"
@@ -325,6 +339,7 @@ const (
 	uriTrafficselector = "traffic-selector"
 	uriIpsecPolicy     = "ipsec-policy"
 	uriIkePeer         = "ike-peer"
+	uriAddressList     = "address-list"
 )
 
 // formatResourceID takes the resource name to
@@ -823,3 +838,43 @@ func (b *BigIP) GetIPSecProfile(name string) (*IPSecProfile, error) {
 
 	return &ipsec, nil
 }
+
+func (b *BigIP) AddressLists() (*AddressLists, error) {
+	var addressLists AddressLists
+	err, ok := b.getForEntity(&addressLists, uriNet, uriAddressList)
+	if err != nil {
+    return nil, err
+	}
+
+	if !ok {
+		return nil, nil
+	}
+
+	return &addressLists, nil
+}
+
+func (b *BigIP) GetAddressList(name string) (*AddressList, error) {
+  var addressList AddressList
+	err, ok := b.getForEntity(&addressList, uriNet, uriAddressList, name)
+	if err != nil {
+		return nil, err
+	}
+
+	if !ok {
+		return nil, nil
+	}
+	return &addressList, nil
+}
+
+func (b *BigIP) AddAddressList(config *AddressList) error {
+	return b.post(config, uriNet, uriAddressList)
+}
+
+func (b *BigIP) ModifyAddressList(name string, config *AddressList) error {
+	return b.patch(config, uriNet, uriAddressList, name)
+}
+
+func (b *BigIP) DeleteAddressList(name string) error {
+	return b.delete(uriNet, uriAddressList, name)
+}
+
