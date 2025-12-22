@@ -314,11 +314,12 @@ type AddressLists struct {
 }
 
 type AddressList struct {
-	Name       string `json:"name,omitempty"`
-	Partition  string `json:"partition,omitempty"`
-	FullPath   string `json:"fullPath,omitempty"`
-	Generation int    `json:"generation,omitempty"`
-	Addresses  []struct{
+	Name        string `json:"name,omitempty"`
+	Description string `json:"description,omitempty"`
+	Partition   string `json:"partition,omitempty"`
+	FullPath    string `json:"fullPath,omitempty"`
+	Generation  int    `json:"generation,omitempty"`
+	Addresses   []struct{
 		Name string `json:"name,omitempty"`
 	} `json:"addresses,omitempty"`
 }
