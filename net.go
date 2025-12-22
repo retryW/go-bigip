@@ -310,7 +310,7 @@ type IPSecProfile struct {
 }
 
 type AddressLists struct {
-	Items []AddressList `json:"items,omitempty"`
+	AddressLists []AddressList `json:"items,omitempty"`
 }
 
 type AddressList struct {
