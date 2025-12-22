@@ -720,7 +720,7 @@ var goodAddressListResponse = `{
 	]
 }`
 
-var someAddresses := []struct{
+var someAddresses = []struct{
   Name string `json:"name,omitempty"`
 } {
 	{ Name: "1.2.3.4" },
@@ -736,14 +736,14 @@ func (s *NetTestSuite) TestGetAddressLists() {
 
 	assert.Nil(s.T(), err)
 	assertRestCall(s, "GET", "/mgmt/tm/net/address-list", "")
-	assert.Equal(s.T(), 2, len(addressLists))
-	assert.Equal(s.T(), "addresslist-foo", addressLists[0].Name)
-	assert.Equal(s.T(), "addresslist-bar", addressLists[1].Name)
+	assert.Equal(s.T(), 2, len(addressLists.AddressLists))
+	assert.Equal(s.T(), "addresslist-foo", addressLists.AddressLists[0].Name)
+	assert.Equal(s.T(), "addresslist-bar", addressLists.AddressLists[1].Name)
 }
 
 func (s *NetTestSuite) TestAddressList() {
 	s.ResponseFunc = func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(goodAddressListRespnse))
+		w.Write([]byte(goodAddressListResponse))
 	}
 
 	addressList, err := s.Client.GetAddressList("addresslist-foo")
@@ -751,7 +751,7 @@ func (s *NetTestSuite) TestAddressList() {
 	assert.Nil(s.T(), err)
 	assertRestCall(s, "GET", "/mgmt/tm/net/address-list/~Common~addresslist-foo", "")
 	assert.Equal(s.T(), "addresslist-foo", addressList.Name)
-	assert.Equal(s.T(), someAddresses, addressList.Addresses
+	assert.Equal(s.T(), someAddresses, addressList.Addresses)
 }
 
 func (s *NetTestSuite) TestAddAddressList() {
@@ -772,11 +772,11 @@ func (s *NetTestSuite) TestModifyAddressList() {
 		Addresses: []struct{
       Name string `json:"name,omitempty"`
 	  }{
-      Name: "6.7.8.9",
-	  }
+			{ Name: "6.7.8.9", },
+	  },
 	}
 
-	err := s.Client.ModifyAddressList(&someAddressListMod)
+	err := s.Client.ModifyAddressList("addresslist-foo", &someAddressListMod)
 
 	assert.Nil(s.T(), err)
 	assertRestCall(s, "PATCH", "mgmt/tm/net/address-list/~Common~addresslist-foo", `{"addresses": [{"name": "6.7.8.9"}]}`)
