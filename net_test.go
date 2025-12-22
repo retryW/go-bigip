@@ -248,7 +248,11 @@ func (s *NetTestSuite) TestVlans() {
 }
 
 func (s *NetTestSuite) TestCreateVLan() {
-	err := s.Client.CreateVlan("name", 1)
+	someVlan := &Vlan{
+		Name: "name",
+		Tag: 1,
+	}
+	err := s.Client.CreateVlan(someVlan)
 
 	assert.Nil(s.T(), err)
 	assertRestCall(s, "POST", "/mgmt/tm/net/vlan", `{"name":"name", "tag":1, "sflow":{}}`)
@@ -487,7 +491,7 @@ func (s *NetTestSuite) TestGetTunnel() {
 	tunnel, err := s.Client.GetTunnel("http-tunnel")
 
 	assert.Nil(s.T(), err)
-	assertRestCall(s, "GET", "/mgmt/tm/net/tunnels/tunnel/~Common~http-tunnel", "")
+	assertRestCall(s, "GET", "/mgmt/tm/net/tunnels/tunnel/http-tunnel", "")
 	assert.Equal(s.T(), "http-tunnel", tunnel.Name)
 	assert.Equal(s.T(), "/Common/tcp-forward", tunnel.Profile)
 }
@@ -722,9 +726,9 @@ var goodAddressListResponse = `{
 
 var someAddresses = []struct{
   Name string `json:"name,omitempty"`
-} {
-	{ Name: "1.2.3.4" },
-	{ Name: "4.3.2.1" },
+}{
+  { Name: "1.2.3.4" },
+  { Name: "4.3.2.1" },
 }
 
 func (s *NetTestSuite) TestGetAddressLists() {
@@ -749,7 +753,7 @@ func (s *NetTestSuite) TestAddressList() {
 	addressList, err := s.Client.GetAddressList("addresslist-foo")
 
 	assert.Nil(s.T(), err)
-	assertRestCall(s, "GET", "/mgmt/tm/net/address-list/~Common~addresslist-foo", "")
+	assertRestCall(s, "GET", "/mgmt/tm/net/address-list/addresslist-foo", "")
 	assert.Equal(s.T(), "addresslist-foo", addressList.Name)
 	assert.Equal(s.T(), someAddresses, addressList.Addresses)
 }
@@ -779,7 +783,7 @@ func (s *NetTestSuite) TestModifyAddressList() {
 	err := s.Client.ModifyAddressList("addresslist-foo", &someAddressListMod)
 
 	assert.Nil(s.T(), err)
-	assertRestCall(s, "PATCH", "mgmt/tm/net/address-list/~Common~addresslist-foo", `{"addresses": [{"name": "6.7.8.9"}]}`)
+	assertRestCall(s, "PATCH", "/mgmt/tm/net/address-list/addresslist-foo", `{"addresses": [{"name": "6.7.8.9"}]}`)
 }
 
 func (s *NetTestSuite) TestDeleteAddressList() {
