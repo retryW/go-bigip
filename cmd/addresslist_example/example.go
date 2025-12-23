@@ -20,7 +20,7 @@ func main() {
 
 	f5 := bigip.NewSession(&config)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	// Create an Address List
