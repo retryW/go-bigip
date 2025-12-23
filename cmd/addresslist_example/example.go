@@ -73,7 +73,7 @@ func main() {
 		Source: "0.0.0.0/0",
 		IPProtocol: "tcp",
 		Mask: "255.255.255.255",
-		TrafficMatchingCriteria: fmt.Sprintf("/%s/%s", trafficMatchingCriteria.Partition, trafficMatchingCriteria.Name,
+		TrafficMatchingCriteria: fmt.Sprintf("/%s/%s", trafficMatchingCriteria.Partition, trafficMatchingCriteria.Name),
 	}
 
 	err := f5.AddVirtualServer(virtualServer)
