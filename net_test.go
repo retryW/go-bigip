@@ -32,6 +32,7 @@ func (s *NetTestSuite) SetupSuite() {
 		Address:  s.Server.URL,
 		Username: "",
 		Password: "",
+		CertVerifyDisable: true,
 	}
 
 	s.Client = NewSession(config)
@@ -724,14 +725,12 @@ var goodAddressListResponse = `{
 	]
 }`
 
-var someAddresses = []struct{
-  Name string `json:"name,omitempty"`
-}{
+var someAddresses = []AddressListAddress{
   { Name: "1.2.3.4" },
   { Name: "4.3.2.1" },
 }
 
-func (s *NetTestSuite) TestGetAddressLists() {
+func (s *NetTestSuite) TestAddressLists() {
 	s.ResponseFunc = func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(goodAddressListsResponse))
 	}
@@ -745,7 +744,7 @@ func (s *NetTestSuite) TestGetAddressLists() {
 	assert.Equal(s.T(), "addresslist-bar", addressLists.AddressLists[1].Name)
 }
 
-func (s *NetTestSuite) TestAddressList() {
+func (s *NetTestSuite) TestGetAddressList() {
 	s.ResponseFunc = func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(goodAddressListResponse))
 	}
@@ -773,9 +772,7 @@ func (s *NetTestSuite) TestAddAddressList() {
 
 func (s *NetTestSuite) TestModifyAddressList() {
 	someAddressListMod := AddressList{
-		Addresses: []struct{
-      Name string `json:"name,omitempty"`
-	  }{
+		Addresses: []AddressListAddress{
 			{ Name: "6.7.8.9", },
 	  },
 	}

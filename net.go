@@ -319,9 +319,11 @@ type AddressList struct {
 	Partition   string `json:"partition,omitempty"`
 	FullPath    string `json:"fullPath,omitempty"`
 	Generation  int    `json:"generation,omitempty"`
-	Addresses   []struct{
-		Name string `json:"name,omitempty"`
-	} `json:"addresses,omitempty"`
+	Addresses   []AddressListAddress `json:"addresses,omitempty"`
+}
+
+type AddressListAddress struct {
+	Name string `json:"name,omitempty"`
 }
 
 const (
