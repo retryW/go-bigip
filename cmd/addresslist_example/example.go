@@ -48,7 +48,7 @@ func main() {
 		Partition: "Common",
 		DestinationAddressInline: "192.168.1.150",
 		DestinationPortInline: "443",
-		SourceAddressList(fmt.Sprintf("/%s/%s", addressList.Partition, addressList.Name)),
+		SourceAddressList: fmt.Sprintf("/%s/%s", addressList.Partition, addressList.Name),
 		SourcePortInline: 0,
 	}
 
