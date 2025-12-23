@@ -11,6 +11,7 @@ See the License for the specific language governing permissions and limitations 
 package bigip
 
 import (
+	"context"
 	"regexp"
 	"strings"
 )
@@ -842,7 +843,11 @@ func (b *BigIP) GetIPSecProfile(name string) (*IPSecProfile, error) {
 	return &ipsec, nil
 }
 
-func (b *BigIP) AddressLists() (*AddressLists, error) {
+func (b *BigIP) AddressLists(ctx context.Context) (*AddressLists, error) {
+	if ctx.Err() != nil {
+		return nil, ctx.Err()
+	}
+
 	var addressLists AddressLists
 	err, ok := b.getForEntity(&addressLists, uriNet, uriAddressList)
 	if err != nil {
@@ -856,7 +861,11 @@ func (b *BigIP) AddressLists() (*AddressLists, error) {
 	return &addressLists, nil
 }
 
-func (b *BigIP) GetAddressList(name string) (*AddressList, error) {
+func (b *BigIP) GetAddressList(ctx context.Context, name string) (*AddressList, error) {
+	if ctx.Err() != nil {
+		return nil, ctx.Err()
+	}
+
   var addressList AddressList
 	err, ok := b.getForEntity(&addressList, uriNet, uriAddressList, name)
 	if err != nil {
@@ -869,15 +878,27 @@ func (b *BigIP) GetAddressList(name string) (*AddressList, error) {
 	return &addressList, nil
 }
 
-func (b *BigIP) AddAddressList(config *AddressList) error {
+func (b *BigIP) AddAddressList(ctx context.Context, config *AddressList) error {
+	if ctx.Err() != nil {
+		return ctx.Err()
+	}
+
 	return b.post(config, uriNet, uriAddressList)
 }
 
-func (b *BigIP) ModifyAddressList(name string, config *AddressList) error {
+func (b *BigIP) ModifyAddressList(ctx context.Context, name string, config *AddressList) error {
+	if ctx.Err() != nil {
+		return ctx.Err()
+	}
+
 	return b.patch(config, uriNet, uriAddressList, name)
 }
 
-func (b *BigIP) DeleteAddressList(name string) error {
+func (b *BigIP) DeleteAddressList(ctx context.Context, name string) error {
+	if ctx.Err() != nil {
+		return ctx.Err()
+	}
+
 	return b.delete(uriNet, uriAddressList, name)
 }
 

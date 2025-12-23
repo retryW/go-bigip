@@ -1,7 +1,9 @@
 package bigip
 
 import (
+	"context"
 	"net/http"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -52,7 +54,10 @@ func (s *NetTestSuite) TestTrafficMatchingCriteria() {
 		}]}`))
 	}
 
-	trafficMatchingCriterias, err := s.Client.TrafficMatchingCriterias()
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
+
+	trafficMatchingCriterias, err := s.Client.TrafficMatchingCriterias(ctx)
 
 	assert.Nil(s.T(), err)
 	assertRestCall(s, "GET", "/mgmt/tm/ltm/traffic-matching-criteria", "")
@@ -83,7 +88,10 @@ func (s *NetTestSuite) TestGetTrafficMatchingCriteria() {
 		}`))
 	}
 
-	trafficMatchingCriteria, err := s.Client.GetTrafficMatchingCriteria("tmc-foo")
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
+
+	trafficMatchingCriteria, err := s.Client.GetTrafficMatchingCriteria(ctx, "tmc-foo")
 
 	assert.Nil(s.T(), err)
 	assertRestCall(s, "GET", "/mgmt/tm/ltm/traffic-matching-criteria/tmc-foo", "")
@@ -103,7 +111,10 @@ func (s *NetTestSuite) TestAddTrafficMatchingCriteria() {
 		SourcePortInline: 0,
 	}
 
-	err := s.Client.AddTrafficMatchingCriteria(someTrafficMatchingCriteria)
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
+
+	err := s.Client.AddTrafficMatchingCriteria(ctx, someTrafficMatchingCriteria)
 
 	assert.Nil(s.T(), err)
 	assertRestCall(s, "POST", "/mgmt/tm/ltm/traffic-matching-criteria", `{"name":"tmc-foo","partition":"Common","destinationAddressInline":"192.168.1.100","destinationPortInline":"443","protocol":"tcp","sourceAddressInline":"0.0.0.0","sourceAddressList":"/Common/addresslist-foo"}`)
@@ -113,14 +124,20 @@ func (s *NetTestSuite) TestModifyTrafficMatchingCriteria() {
 	someTrafficMatchingCriteriaMod := &TrafficMatchingCriteria{
 		SourceAddressList: "/Common/addresslist-bar",
 	}
-	err := s.Client.ModifyTrafficMatchingCriteria("tmc-foo", someTrafficMatchingCriteriaMod)
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
+
+	err := s.Client.ModifyTrafficMatchingCriteria(ctx, "tmc-foo", someTrafficMatchingCriteriaMod)
 
 	assert.Nil(s.T(), err)
 	assertRestCall(s, "PATCH", "/mgmt/tm/ltm/traffic-matching-criteria/tmc-foo", `{"sourceAddressList":"/Common/addresslist-bar"}`)
 }
 
 func (s *NetTestSuite) TestDeleteTrafficMatchingCriteria() {
-	err := s.Client.DeleteTrafficMatchingCriteria("tmc-foo")
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
+
+	err := s.Client.DeleteTrafficMatchingCriteria(ctx, "tmc-foo")
 
 	assert.Nil(s.T(), err)
 	assertRestCall(s, "DELETE", "/mgmt/tm/ltm/traffic-matching-criteria/tmc-foo", "")

@@ -20,23 +20,26 @@ func main() {
 
 	f5 := bigip.NewSession(&config)
 
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
+
 	// Create an Address List
 	addressList := &bigip.AddressList{
 		Name: "addresslist-example",
 		Partition: "Common",
-		Addresses: []AddressListAddress{
+		Addresses: []bigip.AddressListAddress{
 			{ Name: "1.2.3.4" },
 		},
 	}
 
-	err := f5.AddAddressList(addressList)
+	err := f5.AddAddressList(ctx, addressList)
 
 	if err != nil {
     log.Fatalf("Failed to create address list: %v", err)
 	}
 
 	// Get the address list
-	addressListGet, err := f5.GetAddressList(addressList.Name)
+	addressListGet, err := f5.GetAddressList(ctx, addressList.Name)
 	if err != nil {
 		log.Fatalf("Failed to get address list: %v", err)
 	}
@@ -52,14 +55,14 @@ func main() {
 		SourcePortInline: 0,
 	}
 
-	err := f5.AddTrafficMatchingCriteria(trafficMatchingCriteria)
+	err = f5.AddTrafficMatchingCriteria(ctx, trafficMatchingCriteria)
 
 	if err != nil {
 		log.Fatalf("Failed to create traffic matching criteria: %v", err)
 	}
 
 	// Get the traffic matching criteria
-	trafficMatchingCriteriaGet, err := f5.GetTrafficMatchingCriteria(trafficMatchingCriteria.Name)
+	trafficMatchingCriteriaGet, err := f5.GetTrafficMatchingCriteria(ctx, trafficMatchingCriteria.Name)
 	if err != nil {
 		log.Fatalf("Failed to get traffic matching criteria: %v", err)
 	}
@@ -76,7 +79,7 @@ func main() {
 		TrafficMatchingCriteria: fmt.Sprintf("/%s/%s", trafficMatchingCriteria.Partition, trafficMatchingCriteria.Name),
 	}
 
-	err := f5.AddVirtualServer(virtualServer)
+	err = f5.AddVirtualServer(virtualServer)
 	if err != nil {
 		log.Fatalf("Failed to create virtual server: %v", err)
 	}
@@ -90,20 +93,21 @@ func main() {
 
 	fmt.Println("Virtual server with address list created")
 
-	err := f5.DeleteVirtualServer(virtualServer.Name)
+	err = f5.DeleteVirtualServer(virtualServer.Name)
 	if err != nil {
 		log.Fatalf("Failed to delete virtual server: %v", err)
 	}
 
-	err := f5.DeleteTrafficMatchingCriteria(trafficMatchingCriteria.Name)
+	err = f5.DeleteTrafficMatchingCriteria(ctx, trafficMatchingCriteria.Name)
 	if err != nil {
 		log.Fatalf("Failed to delete traffic matching criteria: %v", err)
 	}
 
-	err := f5.DeleteAddressList(addressList.Name)
+	err = f5.DeleteAddressList(ctx, addressList.Name)
 	if err != nil {
 		log.Fatalf("Failed to delete address list: %v", err)
 	}
 
 	fmt.Println("virutal server, traffic matching criteria, and address list deleted.")
+}
 

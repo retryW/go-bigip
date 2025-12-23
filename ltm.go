@@ -11,6 +11,7 @@ See the License for the specific language governing permissions and limitations 
 package bigip
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -4968,7 +4969,11 @@ func (b *BigIP) ModifyAnalyticsProfile(name string, config *AnalyticsProfile) er
 }
 
 // GetTrafficMatchingCriteria returns all TrafficMatchingCriteria objects on the Big-IP system.
-func (b *BigIP) TrafficMatchingCriterias() (*TrafficMatchingCriterias, error) {
+func (b *BigIP) TrafficMatchingCriterias(ctx context.Context) (*TrafficMatchingCriterias, error) {
+	if ctx.Err() != nil {
+		return nil, ctx.Err()
+	}
+
 	var trafficMatchingCriterias TrafficMatchingCriterias
 	err, ok := b.getForEntity(&trafficMatchingCriterias, uriLtm, uriTrafficMatchingCriteria)
 	if err != nil {
@@ -4984,7 +4989,11 @@ func (b *BigIP) TrafficMatchingCriterias() (*TrafficMatchingCriterias, error) {
 
 // GetTrafficMatchingCriteria returns a single named TrafficMatchingCriteria.
 // Returns nil if the Traffic Matching Criteria does not exist.
-func (b *BigIP) GetTrafficMatchingCriteria(name string) (*TrafficMatchingCriteria, error) {
+func (b *BigIP) GetTrafficMatchingCriteria(ctx context.Context, name string) (*TrafficMatchingCriteria, error) {
+	if ctx.Err() != nil {
+		return nil, ctx.Err()
+	}
+
 	var trafficMatchingCriteria TrafficMatchingCriteria
 	err, ok := b.getForEntity(&trafficMatchingCriteria, uriLtm, uriTrafficMatchingCriteria, name)
 
@@ -5000,16 +5009,28 @@ func (b *BigIP) GetTrafficMatchingCriteria(name string) (*TrafficMatchingCriteri
 }
 
 // AddTrafficMatchingCritera creates a Traffic Matching Criteria object on the Big-IP system.
-func (b *BigIP) AddTrafficMatchingCriteria(config *TrafficMatchingCriteria) error {
+func (b *BigIP) AddTrafficMatchingCriteria(ctx context.Context, config *TrafficMatchingCriteria) error {
+	if ctx.Err() != nil {
+		return ctx.Err()
+	}
+
 	return b.post(config, uriLtm, uriTrafficMatchingCriteria)
 }
 
 // ModifyTrafficMatchingCriteria modifies a Traffic Matching Criteria object on the Big-IP system.
-func (b *BigIP) ModifyTrafficMatchingCriteria(name string, config *TrafficMatchingCriteria) error {
+func (b *BigIP) ModifyTrafficMatchingCriteria(ctx context.Context, name string, config *TrafficMatchingCriteria) error {
+	if ctx.Err() != nil {
+		return ctx.Err()
+	}
+
 	return b.patch(config, uriLtm, uriTrafficMatchingCriteria, name)
 }
 
 // DeleteTrafficMatchingCriteria removes a Traffic Matching Criteria object from the Big-IP system.
-func (b *BigIP) DeleteTrafficMatchingCriteria (name string) error {
+func (b *BigIP) DeleteTrafficMatchingCriteria (ctx context.Context, name string) error {
+	if ctx.Err() != nil {
+		return ctx.Err()
+	}
+
 	return b.delete(uriLtm, uriTrafficMatchingCriteria, name)
 }

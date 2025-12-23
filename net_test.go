@@ -1,10 +1,12 @@
 package bigip
 
 import (
+	"context"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
@@ -671,7 +673,14 @@ func (s *NetTestSuite) TestModifyVxlan() {
 	assertRestCall(s, "PUT", "/mgmt/tm/net/tunnels/vxlan/some-foo-vxlan", `{"port":456}`)
 }
 
-var goodAddressListsResponse = `{
+var someAddresses = []AddressListAddress{
+  { Name: "1.2.3.4" },
+  { Name: "4.3.2.1" },
+}
+
+func (s *NetTestSuite) TestAddressLists() {
+	s.ResponseFunc = func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(`{
 	"kind": "tm:net:address-list:address-listcollectionstate",
 	"selfLink": "https://localhost/mgmt/tm/net/address-list?ver=1.2.3.4",
 	"items": [
@@ -706,9 +715,24 @@ var goodAddressListsResponse = `{
 			]
 		}
 	]
-}`
+}`))
+	}
 
-var goodAddressListResponse = `{
+  ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
+
+	addressLists, err := s.Client.AddressLists(ctx)
+
+	assert.Nil(s.T(), err)
+	assertRestCall(s, "GET", "/mgmt/tm/net/address-list", "")
+	assert.Equal(s.T(), 2, len(addressLists.AddressLists))
+	assert.Equal(s.T(), "addresslist-foo", addressLists.AddressLists[0].Name)
+	assert.Equal(s.T(), "addresslist-bar", addressLists.AddressLists[1].Name)
+}
+
+func (s *NetTestSuite) TestGetAddressList() {
+	s.ResponseFunc = func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(`{
   "kind": "tm:net:address-list:address-liststate",
 	"selfLink": "https://localhost/mgmt/tm/net/address-list/~Common~addresslist-foo",
 	"name": "addresslist-foo",
@@ -723,33 +747,13 @@ var goodAddressListResponse = `{
 			"name": "4.3.2.1"
 		}
 	]
-}`
-
-var someAddresses = []AddressListAddress{
-  { Name: "1.2.3.4" },
-  { Name: "4.3.2.1" },
-}
-
-func (s *NetTestSuite) TestAddressLists() {
-	s.ResponseFunc = func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(goodAddressListsResponse))
+}`))
 	}
 
-	addressLists, err := s.Client.AddressLists()
+  ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
 
-	assert.Nil(s.T(), err)
-	assertRestCall(s, "GET", "/mgmt/tm/net/address-list", "")
-	assert.Equal(s.T(), 2, len(addressLists.AddressLists))
-	assert.Equal(s.T(), "addresslist-foo", addressLists.AddressLists[0].Name)
-	assert.Equal(s.T(), "addresslist-bar", addressLists.AddressLists[1].Name)
-}
-
-func (s *NetTestSuite) TestGetAddressList() {
-	s.ResponseFunc = func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(goodAddressListResponse))
-	}
-
-	addressList, err := s.Client.GetAddressList("addresslist-foo")
+	addressList, err := s.Client.GetAddressList(ctx, "addresslist-foo")
 
 	assert.Nil(s.T(), err)
 	assertRestCall(s, "GET", "/mgmt/tm/net/address-list/addresslist-foo", "")
@@ -764,7 +768,11 @@ func (s *NetTestSuite) TestAddAddressList() {
 		Partition:         "Common",
 		Addresses:         someAddresses,
 	}
-	err := s.Client.AddAddressList(&someAddressList)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
+
+	err := s.Client.AddAddressList(ctx, &someAddressList)
 
 	assert.Nil(s.T(), err)
 	assertRestCall(s, "POST", "/mgmt/tm/net/address-list", `{"addresses":[{"name":"1.2.3.4"}, {"name":"4.3.2.1"}], "description":"An address list", "name":"addresslist-foo", "partition":"Common"}`)
@@ -777,14 +785,20 @@ func (s *NetTestSuite) TestModifyAddressList() {
 	  },
 	}
 
-	err := s.Client.ModifyAddressList("addresslist-foo", &someAddressListMod)
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
+
+	err := s.Client.ModifyAddressList(ctx, "addresslist-foo", &someAddressListMod)
 
 	assert.Nil(s.T(), err)
 	assertRestCall(s, "PATCH", "/mgmt/tm/net/address-list/addresslist-foo", `{"addresses": [{"name": "6.7.8.9"}]}`)
 }
 
 func (s *NetTestSuite) TestDeleteAddressList() {
-	err := s.Client.DeleteAddressList("addresslist-foo")
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
+
+	err := s.Client.DeleteAddressList(ctx, "addresslist-foo")
 
 	assert.Nil(s.T(), err)
 	assertRestCall(s, "DELETE", "/mgmt/tm/net/address-list/addresslist-foo", "")
