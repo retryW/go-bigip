@@ -8,7 +8,22 @@
 [//]: # (WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.)
 [//]: # (See the License for the specific language governing permissions and limitations under the License.)
 
+-----
+
+This is a fork of <https://github.com/f5devcentral/go-bigip>, pulled from <https://github.com/retryW/go-bigip/tree/feat_tmc_address_lists>
+
+Currently this adds the following features not yet provided by the vendor:
+
+- Traffic Matching Criteria
+- Address Lists
+- Universal Persistence Profiles
+
+This project is a prerequisite for the terraform-provider-bigip fork.
+
+-----
+
 ## go-bigip
+
 [![GoDoc](https://godoc.org/github.com/f5devcentral/go-bigip?status.svg)](https://godoc.org/github.com/f5devcentral/go-bigip) [![Travis-CI](https://travis-ci.org/f5devcentral/go-bigip.svg?branch=master)](https://travis-ci.org/f5devcentral/go-bigip)
 [![Go Report Card](https://goreportcard.com/badge/github.com/f5devcentral/go-bigip)](https://goreportcard.com/report/github.com/f5devcentral/go-bigip)
 [![license](http://img.shields.io/badge/license-MIT-red.svg?style=flat)](https://raw.githubusercontent.com/f5devcentral/go-bigip/master/LICENSE)
